@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>MySpend - Dashboard</title>
+    <script src="https://unpkg.com/@supabase/supabase-js"></script>
+    <link rel="stylesheet" href="/style/style.css" />
+  </head>
+  <body onload="checkSession()">
+    <div style="margin: 20px">
+      <div class="welcome">
+        <h1>Selamat datang, <span id="username"></span></h1>
+        <button class="logout" onclick="logout()">Logout</button>
+      </div>
+
+      <div id="tabelPengeluaran"></div>
+
+      <div class="pengeluaran">
+        <h3>Tambah Pengeluaran</h3>
+        <div class="form-pengeluaran">
+          <input type="date" id="tanggal" />
+          <select id="keperluan">
+            <option value="makan">Makan</option>
+            <option value="bensin">Bensin</option>
+            <option value="belanja">Belanja</option>
+            <option value="laundry">Laundry</option>
+            <option value="lain-lain">Lain-lain</option>
+          </select>
+          <input type="number" id="jumlah" placeholder="Jumlah" />
+          <select id="metode">
+            <option value="qris">QRIS</option>
+            <option value="cash">Cash</option>
+            <option value="transfer">Transfer</option>
+          </select>
+          <input type="text" id="keterangan" placeholder="Keterangan" />
+          <button onclick="tambahPengeluaran()">Simpan</button>
+        </div>
+      </div>
+
+      <div class="saldo">
+        <h3>Saldo Saat Ini</h3>
+        <p>Tabungan: Rp <span id="tabungan">0</span></p>
+        <p>Cash: Rp <span id="cash">0</span></p>
+        <button onclick="openEditSaldo()">Edit Saldo</button>
+      </div>
+    </div>
+    <!-- Modal Edit Pengeluaran -->
+    <div id="editPengeluaranModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeEditPengeluaran()">&times;</span>
+        <h3>Edit Pengeluaran</h3>
+        <input type="hidden" id="editId" />
+        <label>Tanggal</label>
+        <input type="date" id="editTanggal" />
+        <label>Keperluan</label>
+        <input type="text" id="editKeperluan" />
+        <label>Jumlah</label>
+        <input type="number" id="editJumlah" />
+        <label>Metode</label>
+        <select id="editMetode">
+          <option value="qris">QRIS</option>
+          <option value="cash">Cash</option>
+          <option value="transfer">Transfer</option>
+        </select>
+        <label>Keterangan</label>
+        <input type="text" id="editKeterangan" />
+        <button id="updateButton" onclick="updatePengeluaran()">Simpan</button>
+        <button id="hapusButton" onclick="hapusPengeluaran()">Hapus</button>
+      </div>
+    </div>
+
+    <!-- Modal Edit Saldo -->
+    <div id="editSaldoModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeEditSaldo()">&times;</span>
+        <h3>Edit Saldo</h3>
+        <label>Tabungan</label>
+        <input type="number" id="editTabungan" />
+        <label>Cash</label>
+        <input type="number" id="editCash" />
+        <button onclick="updateSaldo()">Simpan</button>
+      </div>
+    </div>
+
+    <script src="/script/supabase.js"></script>
+    <script src="/script/dashboard.js"></script>
+    <script src="/script/auth.js"></script>
+    <script src="/script/main.js"></script>
+  </body>
+</html>

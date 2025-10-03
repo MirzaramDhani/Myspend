@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>MySpend - Login</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="login-box">
+      <h2>Login MySpend</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="login()">Login</button>
+      <p id="error" style="color:red;"></p>
+    </div>
+  </div>
+
+  <script src="/script/supabase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.js"></script>
+  
+  <script src="/script/auth.js"></script>
+</body>
+</html>
