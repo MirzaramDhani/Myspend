@@ -1,6 +1,5 @@
 // dashboard.js
-import { supabase } from "./supabase.js";
-// const supabase = window.supabaseClient;
+const supabase = window.supabaseClient;
 
 const user_id = localStorage.getItem("user_id");
 document.getElementById("username").innerText =

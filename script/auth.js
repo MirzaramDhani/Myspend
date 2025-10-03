@@ -1,12 +1,11 @@
-// const supa = window.supabaseClient;
-import { supabase } from "./supabase.js";
+const supa = window.supabaseClient;
 
 const bcrypt = window.dcodeIO.bcrypt;
 async function login() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
 
-  let { data, error } = await supabase
+  let { data, error } = await supa
     .from("users")
     .select("id, username, password")
     .eq("username", username)
