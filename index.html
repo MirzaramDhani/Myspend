@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>MySpend - Login</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.35.6/dist/supabase.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
@@ -17,9 +17,8 @@
     </div>
   </div>
 
-  <script src="/script/supabase.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.js"></script>
-  
-  <script src="/script/auth.js"></script>
+  <script type="module" src="/script/supabase.js"></script>
+  <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.js"></script>
+  <script type="module" src="/script/auth.js"></script>
 </body>
 </html>
