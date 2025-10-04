@@ -227,21 +227,21 @@ tr:nth-child(even) {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1080px) {
   .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;   /* penuh layar */
-    margin-top: 500px;           /* hapus margin-top 500px */
+    min-height: 100vh;   
+    margin-top: 500px;           
     padding: 20px;
   }
 
   .login-box {
     width: 100%;
     height: 500px;
-    max-width: 500px;   /* lebih besar di mobile */
-    padding: 40px;      /* kasih padding lebih nyaman */
+    max-width: 500px;   
+    padding: 40px;      
   }
 
   .login-box input, .login-box button{
