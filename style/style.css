@@ -233,7 +233,7 @@ tr:nth-child(even) {
     justify-content: center;
     align-items: center;
     min-height: 100vh;   
-    margin-top: 50px;           
+    margin-top: 30px;           
     padding: 20px;
   }
 
@@ -247,6 +247,7 @@ tr:nth-child(even) {
   .login-box input, .login-box button{
     padding: 25px;
     margin: 15px auto;
+    font-size: 20px;
   }
   .login-box h2{
     margin-bottom: 50px;
