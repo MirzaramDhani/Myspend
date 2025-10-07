@@ -160,6 +160,7 @@ function openEditPengeluaran(row) {
   document.getElementById("editMetode").value = row.metode;
   document.getElementById("editKeterangan").value = row.keterangan || "";
 
+  document.getElementById("editOldMetode").value = row.metode
   document.getElementById("editPengeluaranModal").style.display = "block";
 }
 
@@ -173,13 +174,61 @@ async function updatePengeluaran() {
   let id = document.getElementById("editId").value;
   let tanggal = document.getElementById("editTanggal").value;
   let keperluan = document.getElementById("editKeperluan").value;
-  let jumlah = document.getElementById("editJumlah").value;
-  let metode = document.getElementById("editMetode").value;
+  let jumlah = parseInt(document.getElementById("editJumlah").value);
+  let metodeBaru = document.getElementById("editMetode").value;
+  let metodeLama = document.getElementById("editOldMetode").value;
   let keterangan = document.getElementById("editKeterangan").value;
 
+  // Kalau metode tidak berubah, lewati update saldo
+  if (metodeBaru === metodeLama) {
+    console.log("Metode tidak berubah, saldo tidak diubah");
+  } else {
+    // Ambil saldo terakhir
+    let { data: saldoData, error: saldoError } = await supabase
+      .from("saldo")
+      .select("*")
+      .eq("user_id", user_id)
+      .single();
+
+    if (saldoError || !saldoData) {
+      console.error(saldoError);
+      alert("Saldo tidak ditemukan!");
+      return;
+    }
+
+    let tabungan = parseInt(saldoData.tabungan);
+    let cash = parseInt(saldoData.cash);
+
+    // Pulihkan saldo lama terlebih dahulu
+    if (metodeLama === "qris" || metodeLama === "transfer") {
+      tabungan += jumlah;
+    } else if (metodeLama === "cash") {
+      cash += jumlah;
+    }
+
+    // Kurangi saldo sesuai metode baru
+    if (metodeBaru === "qris" || metodeBaru === "transfer") {
+      tabungan -= jumlah;
+    } else if (metodeBaru === "cash") {
+      cash -= jumlah;
+    }
+
+    // Update saldo
+    let { error: updateError } = await supabase
+      .from("saldo")
+      .update({ tabungan, cash })
+      .eq("user_id", user_id);
+
+    if (updateError) {
+      console.error(updateError);
+      alert("Gagal update saldo!");
+    }
+  }
+
+  // Update data pengeluaran di database
   let { error } = await supabase
     .from("pengeluaran")
-    .update({ tanggal, keperluan, jumlah, metode, keterangan })
+    .update({ tanggal, keperluan, jumlah, metode: metodeBaru, keterangan })
     .eq("id", id);
 
   if (error) {
@@ -188,6 +237,7 @@ async function updatePengeluaran() {
   } else {
     closeEditPengeluaran();
     loadPengeluaran();
+    loadSaldo();
   }
 }
 
@@ -283,6 +333,14 @@ function renderRow(row) {
 
 // 🔹 Modal Edit Saldo
 function openEditSaldo() {
+  const tabunganNow = document
+    .getElementById("tabungan")
+    .innerText.replace(/\./g, "");
+  const cashNow = document.getElementById("cash").innerText.replace(/\./g, "");
+
+  document.getElementById("editTabungan").value = parseInt(tabunganNow);
+  document.getElementById("editCash").value = parseInt(cashNow);
+
   document.getElementById("editSaldoModal").style.display = "block";
 }
 
