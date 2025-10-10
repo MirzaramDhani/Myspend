@@ -274,7 +274,7 @@ tr:nth-child(even) {
   }
 
   .modal-content {
-    margin: 300px auto;
+    margin: 500px auto;
     max-width: 800px;
   }
 }
