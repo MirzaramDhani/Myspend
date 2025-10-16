@@ -121,7 +121,7 @@ th, td {
 
 th {
   background: #4CAF50;
-  color: white;
+  color: #ffff;
   text-transform: uppercase;
   font-size: 14px;
   letter-spacing: 0.5px;
@@ -142,35 +142,73 @@ tr:nth-child(even) {
 }
 
 /* Total bulanan */
-.total-bulanan {
+.total-bulanan,
+.total-rentang {
   font-weight: bold;
-  margin: 10px 0 25px;
+  margin: 10px 0px;
   color: #444;
   background: #ecf9f0;
   padding: 10px;
   border-radius: 6px;
   display: inline-block;
 }
-
-/* Form Tambah Pengeluaran */
-.pengeluaran {
+.rentangPengeluaran,
+.catatan-section,
+.pengeluaran{
   padding: 20px;
-  background: #fff;
+  background: #f8f8f8;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
 
+.form-rentangPengeluaran{
+  display: flex;
+  gap: 10px;
+}
+
+.rentangPengeluaran p{
+  align-self: center;
+  font-size: 30px;
+}
+.rentangPengeluaran button{
+  width: 500px;
+}
+
+.total-rentang{
+  display: none;
+  background: #f8f8f8;
+
+}
+
+.pengeluaran {
+  background: #fff;
 }
 
 .form-pengeluaran{
   display: flex;
+  justify-content: space-between;
   gap: 10px;
 }
+
 .pengeluaran input, 
-.pengeluaran select,
-.pengeluaran button {
+.pengeluaran select{
   width: 15%;
 }
 
+.pengeluaran button{
+  width: 200px;
+}
+
+.catatan-section textarea {
+  width: 100%;
+  font-size: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  height: 160px;
+}
 
 /* Saldo */
 .saldo {
@@ -257,15 +295,19 @@ tr:nth-child(even) {
     gap: 10px;
   }
 
-
-
+  .rentangPengeluaran button{
+  width: 400px;
+  }
+  
   .pengeluaran input, 
   .pengeluaran select,
   .pengeluaran button {
     width: 100%;
   }
 
-  .pengeluaran button, .saldo button{
+  .pengeluaran button,
+  .saldo button,
+  .rentangPengeluaran button{
     padding: 20px;
   }
 
@@ -276,6 +318,10 @@ tr:nth-child(even) {
   .modal-content {
     margin: 500px auto;
     max-width: 800px;
+  }
+
+  .catatan-section button{
+    padding: 20px;
   }
 }
 

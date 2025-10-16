@@ -78,6 +78,48 @@ async function loadPengeluaran() {
   });
 }
 
+// Total Pengeluaran Rentang waktu
+document.getElementById("filterButton").addEventListener("click", async () => {
+  const mulai = document.getElementById("tanggalMulai").value;
+  const akhir = document.getElementById("tanggalAkhir").value;
+  const hasilTotal = document.getElementById("hasilTotal");
+
+  if (!mulai || !akhir) {
+    alert("Pilih kedua tanggal terlebih dahulu!");
+    return;
+  }
+
+  if (mulai > akhir) {
+    alert("Tanggal mulai tidak boleh lebih besar dari tanggal akhir!");
+    return;
+  }
+
+  let { data, error } = await supabase
+    .from("pengeluaran")
+    .select("jumlah")
+    .eq("user_id", user_id)
+    .gte("tanggal", mulai)
+    .lte("tanggal", akhir);
+
+  if (error) {
+    console.error(error);
+    hasilTotal.innerText = "Terjadi kesalahan saat mengambil data!";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    hasilTotal.innerText = "Tidak ada pengeluaran pada rentang tanggal ini.";
+    return;
+  }
+
+  // 🔹 Hitung total semua pengeluaran
+  const total = data.reduce((acc, row) => acc + parseInt(row.jumlah), 0);
+
+  hasilTotal.innerText = `Total Pengeluaran dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString("id-ID")}`;
+  hasilTotal.style.display = "block";
+});
+
+
 async function tambahPengeluaran() {
   let tanggal = document.getElementById("tanggal").value;
   let keperluan = document.getElementById("keperluan").value;
@@ -314,6 +356,40 @@ async function hapusPengeluaran() {
   loadSaldo();
 }
 
+async function loadCatatanTerakhir() {
+  const { data, error } = await supabase
+    .from("catatan")
+    .select("isi")
+    .eq("user_id", user_id)
+    .single();
+
+  if (error) {
+    console.error("Gagal memuat catatan:", error);
+    return;
+  }
+
+  if (data) {
+    document.getElementById("catatanTeks").value = data.isi;
+  } else {
+    document.getElementById("catatanTeks").value = "";
+  }
+}
+
+// Fungsi menyimpan atau mengedit catatan
+const catatanInput = document.getElementById("catatanTeks");
+
+catatanInput.addEventListener("blur", async () => {
+  const isi = catatanInput.value.trim();
+  const { error } = await supabase.from("catatan").upsert({ user_id, isi });
+
+  if (error) {
+    console.error(error);
+    alert("Gagal menyimpan catatan!");
+  } else {
+    console.log("Catatan tersimpan");
+  }
+});
+
 
 
 // 🔹 Tambahkan tombol Edit di tiap baris
@@ -365,4 +441,5 @@ async function updateSaldo() {
 }
 
 loadPengeluaran();
+loadCatatanTerakhir();
 loadSaldo();

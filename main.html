@@ -15,6 +15,16 @@
 
       <div id="tabelPengeluaran"></div>
 
+      <div id="rentangPengeluaran" class="rentangPengeluaran">
+        <h3>Pilih Tanggal Pengeluaran</h3>
+        <div class="form-rentangPengeluaran">
+          <input type="date" id="tanggalMulai" />
+          <p>-</p>
+          <input type="date" id="tanggalAkhir" />
+          <button id="filterButton">Pilih</button>
+        </div>
+        <div id="hasilTotal" class="total-rentang"></div>
+      </div>
       <div class="pengeluaran">
         <h3>Tambah Pengeluaran</h3>
         <div class="form-pengeluaran">
@@ -24,6 +34,7 @@
             <option value="bensin">Bensin</option>
             <option value="belanja">Belanja</option>
             <option value="laundry">Laundry</option>
+            <option value="toko online">Toko Online</option>
             <option value="lain-lain">Lain-lain</option>
           </select>
           <input type="number" id="jumlah" placeholder="Jumlah" />
@@ -35,6 +46,15 @@
           <input type="text" id="keterangan" placeholder="Keterangan" />
           <button onclick="tambahPengeluaran()">Simpan</button>
         </div>
+      </div>
+      <!-- Catatan Keuangan -->
+      <div class="catatan-section">
+        <h3>Catatan Keuangan</h3>
+        <textarea
+          id="catatanTeks"
+          placeholder="Tulis catatan keuangan kamu di sini..."
+          rows="6"
+        ></textarea>
       </div>
 
       <div class="saldo">
@@ -53,11 +73,18 @@
         <label>Tanggal</label>
         <input type="date" id="editTanggal" />
         <label>Keperluan</label>
-        <input type="text" id="editKeperluan" />
+        <select id="editKeperluan">
+          <option value="makan">Makan</option>
+          <option value="bensin">Bensin</option>
+          <option value="belanja">Belanja</option>
+          <option value="laundry">Laundry</option>
+          <option value="toko online">Toko Online</option>
+          <option value="lain-lain">Lain-lain</option>
+        </select>
         <label>Jumlah</label>
         <input type="number" id="editJumlah" />
         <label>Metode</label>
-        <input type="hidden" id="editOldMetode">
+        <input type="hidden" id="editOldMetode" />
         <select id="editMetode">
           <option value="qris">QRIS</option>
           <option value="cash">Cash</option>
