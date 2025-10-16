@@ -319,8 +319,8 @@ tr:nth-child(even) {
     margin: 500px auto;
     max-width: 800px;
   }
-  .catatan-section{
-    font-size: 5px;
+  .catatan-section textarea{
+    font-size: 15px;
   }
 }
 
