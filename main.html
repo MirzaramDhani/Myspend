@@ -15,12 +15,22 @@
 
       <div id="tabelPengeluaran"></div>
 
+      <!-- rentang pengeluaran -->
       <div id="rentangPengeluaran" class="rentangPengeluaran">
         <h3>Pilih Tanggal Pengeluaran</h3>
         <div class="form-rentangPengeluaran">
           <input type="date" id="tanggalMulai" />
           <p>-</p>
           <input type="date" id="tanggalAkhir" />
+          <select id="rentangKeperluan">
+            <option value="">-</option>
+            <option value="makan">Makan</option>
+            <option value="bensin">Bensin</option>
+            <option value="belanja">Belanja</option>
+            <option value="laundry">Laundry</option>
+            <option value="toko online">Toko Online</option>
+            <option value="lain-lain">Lain-lain</option>
+          </select>
           <button id="filterButton">Pilih</button>
         </div>
         <div id="hasilTotal" class="total-rentang"></div>

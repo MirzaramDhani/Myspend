@@ -82,6 +82,7 @@ async function loadPengeluaran() {
 document.getElementById("filterButton").addEventListener("click", async () => {
   const mulai = document.getElementById("tanggalMulai").value;
   const akhir = document.getElementById("tanggalAkhir").value;
+  const keperluan = document.getElementById("rentangKeperluan").value;
   const hasilTotal = document.getElementById("hasilTotal");
 
   if (!mulai || !akhir) {
@@ -94,12 +95,20 @@ document.getElementById("filterButton").addEventListener("click", async () => {
     return;
   }
 
-  let { data, error } = await supabase
+  // 🔹 Mulai query dasar
+  let query = supabase
     .from("pengeluaran")
-    .select("jumlah")
+    .select("jumlah, keperluan")
     .eq("user_id", user_id)
     .gte("tanggal", mulai)
     .lte("tanggal", akhir);
+
+  // 🔹 Jika user memilih keperluan tertentu, tambahkan filter
+  if (keperluan && keperluan !== "") {
+    query = query.eq("keperluan", keperluan);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error(error);
@@ -112,12 +121,19 @@ document.getElementById("filterButton").addEventListener("click", async () => {
     return;
   }
 
-  // 🔹 Hitung total semua pengeluaran
+  // 🔹 Hitung total pengeluaran
   const total = data.reduce((acc, row) => acc + parseInt(row.jumlah), 0);
 
-  hasilTotal.innerText = `Total Pengeluaran dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString("id-ID")}`;
+  // 🔹 Tampilkan hasil
+  if (keperluan && keperluan !== "") {
+    hasilTotal.innerText = `Total Pengeluaran untuk "${keperluan}" dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString("id-ID")}`;
+  } else {
+    hasilTotal.innerText = `Total Pengeluaran dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString("id-ID")}`;
+  }
+
   hasilTotal.style.display = "block";
 });
+
 
 
 async function tambahPengeluaran() {

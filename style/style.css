@@ -172,7 +172,7 @@ tr:nth-child(even) {
   font-size: 30px;
 }
 .rentangPengeluaran button{
-  width: 500px;
+  width: 700px;
 }
 
 .total-rentang{
@@ -296,7 +296,7 @@ tr:nth-child(even) {
   }
 
   .rentangPengeluaran button{
-  width: 400px;
+  width: 550px;
   }
   
   .pengeluaran input, 
