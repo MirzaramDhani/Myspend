@@ -10,7 +10,7 @@ async function loadPengeluaran() {
     .from("pengeluaran")
     .select("*")
     .eq("user_id", user_id)
-    .order("tanggal");
+    .order("tanggal",{ascending: true});
 
   if (error) {
     console.error(error);
@@ -152,6 +152,8 @@ async function tambahPengeluaran() {
     console.error(insertError);
     alert("Gagal menambah pengeluaran!");
     return;
+  } else{
+    alert("Berhasil menambahkan pengeluaran")
   }
 
   // Ambil saldo terakhir
