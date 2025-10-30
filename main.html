@@ -108,17 +108,52 @@
     </div>
 
     <!-- Modal Edit Saldo -->
-    <div id="editSaldoModal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeEditSaldo()">&times;</span>
-        <h3>Edit Saldo</h3>
-        <label>Tabungan</label>
-        <input type="number" id="editTabungan" />
-        <label>Cash</label>
-        <input type="number" id="editCash" />
-        <button onclick="updateSaldo()">Simpan</button>
+<div id="editSaldoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditSaldo()">&times;</span>
+    <h3>Edit Saldo</h3>
+
+    <!-- Tabungan -->
+    <label>Tabungan</label>
+    <div class="edit-saldo">
+      <input type="number" id="editTabungan" placeholder="Masukkan saldo tabungan" />
+      <button class="tambah-button" onclick="toggleTambah('tabungan')">+</button>
+    </div>
+
+    <!-- Tambah Tabungan -->
+    <div id="tambahTabungan" class="tambah-input" style="display:none;">
+      <input type="number" id="jumlahTambahTabungan" placeholder="Tambahkan Nominal..." />
+      <div class="tombol-tambah">
+        <button onclick="tambahSaldo('tabungan', 100000)">100.000</button>
+        <button onclick="tambahSaldo('tabungan', 50000)">50.000</button>
+        <button onclick="tambahSaldo('tabungan', 20000)">20.000</button>
+        <button onclick="tambahSaldo('tabungan', 10000)">10.000</button>
+        <button onclick="tambahSaldo('tabungan', 5000)">5.000</button>
       </div>
     </div>
+
+    <!-- Cash -->
+    <label>Cash</label>
+    <div class="edit-saldo">
+      <input type="number" id="editCash" placeholder="Masukkan saldo cash" />
+      <button class="tambah-button" onclick="toggleTambah('cash')">+</button>
+    </div>
+
+    <!-- Tambah Cash -->
+    <div id="tambahCash" class="tambah-input" style="display:none;">
+      <input type="number" id="jumlahTambahCash" placeholder="Tambahkan Nominal..." />
+      <div class="tombol-tambah">
+        <button onclick="tambahSaldo('cash', 100000)">100.000</button>
+        <button onclick="tambahSaldo('cash', 50000)">50.000</button>
+        <button onclick="tambahSaldo('cash', 20000)">20.000</button>
+        <button onclick="tambahSaldo('cash', 10000)">10.000</button>
+        <button onclick="tambahSaldo('cash', 5000)">5.000</button>
+      </div>
+    </div>
+
+    <button class="simpan-button" onclick="updateSaldo()">Simpan</button>
+  </div>
+</div>
 
     <script src="/script/supabase.js"></script>
     <script src="/script/dashboard.js"></script>

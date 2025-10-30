@@ -10,7 +10,7 @@ async function loadPengeluaran() {
     .from("pengeluaran")
     .select("*")
     .eq("user_id", user_id)
-    .order("tanggal",{ascending: true});
+    .order("tanggal", { ascending: true });
 
   if (error) {
     console.error(error);
@@ -126,15 +126,17 @@ document.getElementById("filterButton").addEventListener("click", async () => {
 
   // 🔹 Tampilkan hasil
   if (keperluan && keperluan !== "") {
-    hasilTotal.innerText = `Total Pengeluaran untuk "${keperluan}" dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString("id-ID")}`;
+    hasilTotal.innerText = `Total Pengeluaran untuk "${keperluan}" dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString(
+      "id-ID"
+    )}`;
   } else {
-    hasilTotal.innerText = `Total Pengeluaran dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString("id-ID")}`;
+    hasilTotal.innerText = `Total Pengeluaran dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString(
+      "id-ID"
+    )}`;
   }
 
   hasilTotal.style.display = "block";
 });
-
-
 
 async function tambahPengeluaran() {
   let tanggal = document.getElementById("tanggal").value;
@@ -152,8 +154,8 @@ async function tambahPengeluaran() {
     console.error(insertError);
     alert("Gagal menambah pengeluaran!");
     return;
-  } else{
-    alert("Berhasil menambahkan pengeluaran")
+  } else {
+    alert("Berhasil menambahkan pengeluaran");
   }
 
   // Ambil saldo terakhir
@@ -194,7 +196,6 @@ async function tambahPengeluaran() {
   loadSaldo();
 }
 
-
 async function loadSaldo() {
   let { data, error } = await supabase
     .from("saldo")
@@ -203,15 +204,21 @@ async function loadSaldo() {
     .single();
 
   if (data) {
-    document.getElementById("tabungan").innerText = parseInt(data.tabungan).toLocaleString("id-ID");
-    document.getElementById("cash").innerText = parseInt(data.cash).toLocaleString("id-ID");
+    document.getElementById("tabungan").innerText = parseInt(
+      data.tabungan
+    ).toLocaleString("id-ID");
+    document.getElementById("cash").innerText = parseInt(
+      data.cash
+    ).toLocaleString("id-ID");
     return data;
   } else {
     console.error(error);
   }
 }
 
-// 🔹 Buka modal edit pengeluaran
+// Buka modal edit pengeluaran
+
+let jumlah = null;
 function openEditPengeluaran(row) {
   document.getElementById("editId").value = row.id;
   document.getElementById("editTanggal").value = row.tanggal;
@@ -220,45 +227,49 @@ function openEditPengeluaran(row) {
   document.getElementById("editMetode").value = row.metode;
   document.getElementById("editKeterangan").value = row.keterangan || "";
 
-  document.getElementById("editOldMetode").value = row.metode
+  document.getElementById("editOldMetode").value = row.metode;
   document.getElementById("editPengeluaranModal").style.display = "block";
+  jumlah = parseInt(row.jumlah);
 }
 
-// 🔹 Tutup modal pengeluaran
+// Tutup modal pengeluaran
 function closeEditPengeluaran() {
   document.getElementById("editPengeluaranModal").style.display = "none";
 }
 
-// 🔹 Update pengeluaran
+// Update pengeluaran
 async function updatePengeluaran() {
   let id = document.getElementById("editId").value;
   let tanggal = document.getElementById("editTanggal").value;
   let keperluan = document.getElementById("editKeperluan").value;
-  let jumlah = parseInt(document.getElementById("editJumlah").value);
+  let jumlahNew = parseInt(document.getElementById("editJumlah").value);
   let metodeBaru = document.getElementById("editMetode").value;
   let metodeLama = document.getElementById("editOldMetode").value;
   let keterangan = document.getElementById("editKeterangan").value;
 
+  // Ambil saldo terakhir
+  let { data: saldoData, error: saldoError } = await supabase
+    .from("saldo")
+    .select("*")
+    .eq("user_id", user_id)
+    .single();
+
+  if (saldoError || !saldoData) {
+    console.error(saldoError);
+    alert("Saldo tidak ditemukan!");
+    return;
+  }
+
+  let tabungan = parseInt(saldoData.tabungan);
+  let cash = parseInt(saldoData.cash);
+
+  console.log("tabungan awal:",tabungan);
+  console.log("cash awal:",cash);
+  
   // Kalau metode tidak berubah, lewati update saldo
   if (metodeBaru === metodeLama) {
-    console.log("Metode tidak berubah, saldo tidak diubah");
+    console.log("Metode tidak berubah");
   } else {
-    // Ambil saldo terakhir
-    let { data: saldoData, error: saldoError } = await supabase
-      .from("saldo")
-      .select("*")
-      .eq("user_id", user_id)
-      .single();
-
-    if (saldoError || !saldoData) {
-      console.error(saldoError);
-      alert("Saldo tidak ditemukan!");
-      return;
-    }
-
-    let tabungan = parseInt(saldoData.tabungan);
-    let cash = parseInt(saldoData.cash);
-
     // Pulihkan saldo lama terlebih dahulu
     if (metodeLama === "qris" || metodeLama === "transfer") {
       tabungan += jumlah;
@@ -272,23 +283,33 @@ async function updatePengeluaran() {
     } else if (metodeBaru === "cash") {
       cash -= jumlah;
     }
+  }
 
-    // Update saldo
-    let { error: updateError } = await supabase
-      .from("saldo")
-      .update({ tabungan, cash })
-      .eq("user_id", user_id);
-
-    if (updateError) {
-      console.error(updateError);
-      alert("Gagal update saldo!");
+  if (jumlah !== jumlahNew) {
+    jumlah -= jumlahNew;
+    console.log("selisih jumlah: ",jumlah);
+    if (metodeBaru === "qris" || metodeBaru === "transfer") {
+      tabungan += jumlah;
+    } else if (metodeBaru === "cash") {
+      cash += jumlah;
     }
+  }
+
+  // Update saldo
+  let { error: updateError } = await supabase
+    .from("saldo")
+    .update({ tabungan, cash })
+    .eq("user_id", user_id);
+
+  if (updateError) {
+    console.error(updateError);
+    alert("Gagal update saldo!");
   }
 
   // Update data pengeluaran di database
   let { error } = await supabase
     .from("pengeluaran")
-    .update({ tanggal, keperluan, jumlah, metode: metodeBaru, keterangan })
+    .update({ tanggal, keperluan, jumlah:jumlahNew, metode: metodeBaru, keterangan })
     .eq("id", id);
 
   if (error) {
@@ -306,7 +327,7 @@ async function hapusPengeluaran() {
 
   if (!confirm("Yakin ingin menghapus pengeluaran ini?")) return;
 
-  // 🔹 Ambil data sebelum hapus (supaya saldo bisa dikembalikan)
+  // Ambil data sebelum hapus (supaya saldo bisa dikembalikan)
   let { data: pengeluaranData, error: getError } = await supabase
     .from("pengeluaran")
     .select("*")
@@ -374,6 +395,21 @@ async function hapusPengeluaran() {
   loadSaldo();
 }
 
+// Tambahkan tombol Edit di tiap baris
+function renderRow(row) {
+  // encode row agar aman dipanggil di onclick
+  const rowStr = encodeURIComponent(JSON.stringify(row));
+  return `
+    <tr>
+      <td>${row.tanggal}</td>
+      <td>${row.keperluan}</td>
+      <td>Rp ${parseInt(row.jumlah).toLocaleString("id-ID")}</td>
+      <td>${row.metode}</td>
+      <td>${row.keterangan || ""}</td>
+      <td><button onclick='openEditPengeluaran(JSON.parse(decodeURIComponent("${rowStr}")))' class="btn-edit">Edit</button></td>
+    </tr>`;
+}
+
 async function loadCatatanTerakhir() {
   const { data, error } = await supabase
     .from("catatan")
@@ -408,24 +444,7 @@ catatanInput.addEventListener("blur", async () => {
   }
 });
 
-
-
-// 🔹 Tambahkan tombol Edit di tiap baris
-function renderRow(row) {
-  // encode row agar aman dipanggil di onclick
-  const rowStr = encodeURIComponent(JSON.stringify(row));
-  return `
-    <tr>
-      <td>${row.tanggal}</td>
-      <td>${row.keperluan}</td>
-      <td>Rp ${parseInt(row.jumlah).toLocaleString("id-ID")}</td>
-      <td>${row.metode}</td>
-      <td>${row.keterangan || ""}</td>
-      <td><button onclick='openEditPengeluaran(JSON.parse(decodeURIComponent("${rowStr}")))' class="btn-edit">Edit</button></td>
-    </tr>`;
-}
-
-// 🔹 Modal Edit Saldo
+// === Modal Edit Saldo ===
 function openEditSaldo() {
   const tabunganNow = document
     .getElementById("tabungan")
@@ -440,12 +459,58 @@ function openEditSaldo() {
 
 function closeEditSaldo() {
   document.getElementById("editSaldoModal").style.display = "none";
+  document.getElementById("tambahTabungan").style.display = "none";
+  document.getElementById("tambahCash").style.display = "none";
 }
 
+// === Tampilkan panel tambah saldo ===
+function toggleTambah(tipe) {
+  const target = document.getElementById(
+    "tambah" + tipe.charAt(0).toUpperCase() + tipe.slice(1)
+  );
+  target.style.display = target.style.display === "none" ? "block" : "none";
+}
+
+// === Fungsi menambah saldo (baik tabungan maupun cash) ===
+
+function tambahSaldo(tipe, nominal) {
+  const inputUtama = document.getElementById(
+    tipe === "tabungan" ? "editTabungan" : "editCash"
+  );
+  let currentSaldo = parseInt(inputUtama.value) || 0;
+
+  if (nominal) {
+    currentSaldo += nominal;
+  }
+  inputUtama.value = currentSaldo;
+
+  // Sembunyikan panel tambah setelah menambah saldo
+  const target = document.getElementById(
+    "tambah" + tipe.charAt(0).toUpperCase() + tipe.slice(1)
+  );
+  target.style.display = "none";
+}
+
+// === Fungsi Simpan Perubahan ke Supabase ===
 async function updateSaldo() {
-  let tabungan = document.getElementById("editTabungan").value;
-  let cash = document.getElementById("editCash").value;
-  let { error } = await supabase
+  let tabungan = parseInt(document.getElementById("editTabungan").value) || 0;
+  let cash = parseInt(document.getElementById("editCash").value) || 0;
+  const inputTabungan =
+    parseInt(document.getElementById("jumlahTambahTabungan").value) || 0;
+  const inputCash =
+    parseInt(document.getElementById("jumlahTambahCash").value) || 0;
+  const tabunganNow = document
+    .getElementById("tabungan")
+    .innerText.replace(/\./g, "");
+  const cashNow = document.getElementById("cash").innerText.replace(/\./g, "");
+
+  tabungan += parseInt(inputTabungan);
+  cash += parseInt(inputCash);
+
+  const tabunganThen = tabungan - tabunganNow; 
+  const cashThen = cash - cashNow; 
+
+  const { error } = await supabase
     .from("saldo")
     .upsert({ user_id: user_id, tabungan, cash });
 
@@ -453,6 +518,9 @@ async function updateSaldo() {
     console.error(error);
     alert("Gagal update saldo!");
   } else {
+    document.getElementById("jumlahTambahTabungan").value = "";
+    document.getElementById("jumlahTambahCash").value = "";
+    alert(`Berhasil mengedit saldo tabungan sebesar: ${tabunganThen} dan cash sebesar: ${cashThen}`)
     closeEditSaldo();
     loadSaldo();
   }
