@@ -309,6 +309,9 @@ tr:nth-child(even) {
   *{
     font-size: large;
   }
+  .welcome span{
+    font-size: inherit;
+  }
   .container {
     display: flex;
     justify-content: center;
