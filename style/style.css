@@ -292,6 +292,75 @@ tr:nth-child(even) {
 .close:hover{
   transform: scale(1.5);
 }
+.voice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.mic-button {
+  position: relative;
+  max-width: 60px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mic-button:hover{
+  background-color: rgb(214, 210, 210);
+}
+
+.mic-icon {
+  width: 32px;
+  height: 32px;
+  color: #555;
+}
+
+/* Efek saat listening */
+.mic-button.listening {
+  color: white;
+  animation: pulseRing 1.5s infinite;
+}
+
+.mic-button.listening .mic-icon {
+  color: white;
+  animation: micGlow 1.5s infinite ease-in-out;
+}
+
+.speech-result {
+  justify-self: center;
+  font-style: italic;
+  color: gray;
+  margin-top: 5px;
+}
+
+/* Efek denyut cahaya melingkar */
+@keyframes pulseRing {
+  0% {
+    box-shadow: 0 0 0 0 rgba(182, 182, 182, 0.76);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(255, 75, 75, 0);
+    transform: scale(1.1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 75, 75, 0);
+    transform: scale(1);
+  }
+}
+
+/* Efek glow lembut pada ikon mic */
+@keyframes micGlow {
+  0% { text-shadow: 0 0 0px rgba(255,255,255,0.8); }
+  50% { text-shadow: 0 0 10px rgba(255,255,255,1); }
+  100% { text-shadow: 0 0 0px rgba(255,255,255,0.8); }
+}
 
 /* Animation */
 @keyframes fadeIn {
@@ -370,6 +439,10 @@ tr:nth-child(even) {
   }
   .catatan-section textarea::placeholder{
     font-size: 20px;
+  }
+  .mic-button{
+    max-width: 80px;
+    height: 80px;
   }
 }
 

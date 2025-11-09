@@ -263,9 +263,9 @@ async function updatePengeluaran() {
   let tabungan = parseInt(saldoData.tabungan);
   let cash = parseInt(saldoData.cash);
 
-  console.log("tabungan awal:",tabungan);
-  console.log("cash awal:",cash);
-  
+  console.log("tabungan awal:", tabungan);
+  console.log("cash awal:", cash);
+
   // Kalau metode tidak berubah, lewati update saldo
   if (metodeBaru === metodeLama) {
     console.log("Metode tidak berubah");
@@ -287,7 +287,7 @@ async function updatePengeluaran() {
 
   if (jumlah !== jumlahNew) {
     jumlah -= jumlahNew;
-    console.log("selisih jumlah: ",jumlah);
+    console.log("selisih jumlah: ", jumlah);
     if (metodeBaru === "qris" || metodeBaru === "transfer") {
       tabungan += jumlah;
     } else if (metodeBaru === "cash") {
@@ -309,7 +309,13 @@ async function updatePengeluaran() {
   // Update data pengeluaran di database
   let { error } = await supabase
     .from("pengeluaran")
-    .update({ tanggal, keperluan, jumlah:jumlahNew, metode: metodeBaru, keterangan })
+    .update({
+      tanggal,
+      keperluan,
+      jumlah: jumlahNew,
+      metode: metodeBaru,
+      keterangan,
+    })
     .eq("id", id);
 
   if (error) {
@@ -444,6 +450,131 @@ catatanInput.addEventListener("blur", async () => {
   }
 });
 
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SpeechRecognition) {
+  alert("Browser kamu belum mendukung speech recognition!");
+}
+
+const recognition = new SpeechRecognition();
+recognition.lang = "id-ID";
+recognition.continuous = false;
+recognition.interimResults = false;
+
+document.getElementById("voiceButton").addEventListener("click", () => {
+  recognition.start();
+  document.getElementById("voiceButton").classList.add("listening");
+  document.getElementById("speechResult").innerText = "Mendengarkan...";
+});
+
+recognition.onresult = async (event) => {
+  document.getElementById("voiceButton").classList.remove("listening");
+  const speech = event.results[0][0].transcript.toLowerCase();
+  document.getElementById("speechResult").innerText = `"${speech}"`;
+
+  // Parsing dasar
+  const tanggal = new Date();
+  let keperluan = "";
+  let jumlah = 0;
+  let metode = "cash";
+  let keterangan = "";
+
+  // Pecah hasil suara jadi array kata
+  let words = speech.split(/\s+/);
+  let used = new Set();
+
+  nowDate = ["hari", "ini", "sekarang"];
+  if (nowDate.some((w) => words.includes(w))) {
+    nowDate.forEach((w) => used.add(w));
+  }
+  if (words.includes("kemarin")) {
+    tanggal.setDate(tanggal.getDate() - 1);
+    used.add("kemarin");
+  }
+  const tanggalFormatted = tanggal.toISOString().split("T")[0];
+  const kategori = {
+    makan: ["makan","jajan","sarapan"],
+    bensin: ["bensin"],
+    belanja: ["belanja","beli"],
+    laundry: ["laundry", "londri"],
+    toko_online: ["shopee", "sopi", "tiktok", "online", "onlen"],
+  };
+  for (const [key, keywords] of Object.entries(kategori)) {
+    if (keywords.some((word) => words.includes(word))) {
+      keperluan = key;
+      keywords.forEach((w) => used.add(w));
+      break;
+    }
+  }
+  if (!keperluan) keperluan = "lain-lain";
+  const qrisKeywords = [
+    "qris",
+    "kris",
+    "keris",
+    "chris",
+    "christ",
+    "grace",
+    "gr",
+  ];
+  const transferKeywords = ["transfer", "tf"];
+  if (qrisKeywords.some((keyword) => speech.includes(keyword))) {
+    metode = "qris";
+    qrisKeywords.forEach((w) => used.add(w));
+  }
+
+  if (transferKeywords.some((w) => words.includes(w))) {
+    metode = "transfer";
+    transferKeywords.forEach((w) => used.add(w));
+  }
+  // Normalisasi teks: ubah titik menjadi kosong, biar "10.000" jadi "10000"
+  let speechNormalized = speech.replace(/\./g, "").replace(/rp/g, "").trim();
+
+  const angkaMatch = speechNormalized.match(/(\d+)\s*ribu/); // contoh: "20 ribu"
+  const angkaBiasa = speechNormalized.match(/\d+/); // fallback: "20000" atau "20.000"
+
+  if (angkaMatch) {
+    jumlah = parseInt(angkaMatch[1]) * 1000;
+    // tandai kata "ribu" dan angka sebagai digunakan
+    words.forEach((w) => {
+      if (w.includes(angkaMatch[1]) || w === "ribu") used.add(w);
+    });
+  } else if (angkaBiasa) {
+    jumlah = parseInt(angkaBiasa[0]);
+    words.forEach((w) => {
+      if (/\d/.test(w)) used.add(w);
+    });
+  } else {
+    alert("Jumlah tidak terdeteksi, sebutkan nominal dengan angka!");
+    return;
+  }
+
+  let sisaKata = words.filter((w) => !used.has(w) && w.trim() !== "");
+  keterangan = sisaKata.join(" ").trim();
+  if (!keterangan) keterangan = "";
+
+  let { error } = await supabase
+      .from("pengeluaran")
+      .insert([{ user_id, tanggal: tanggalFormatted, keperluan, jumlah, metode, keterangan }]);
+
+  if (error) {
+    console.error(error);
+    alert("Gagal menyimpan pengeluaran!");
+  } else {
+    alert(
+      `Pengeluaran ${keperluan} sebesar Rp ${jumlah.toLocaleString(
+        "id-ID"
+      )} berhasil disimpan!`
+    );
+  }
+
+  loadPengeluaran();
+  loadSaldo();
+};
+recognition.onerror = (err) => {
+  document.getElementById("speechResult").innerText = `Error: ${err.error}`;
+  document.getElementById("voiceButton").classList.remove("listening");
+};
+
 // === Modal Edit Saldo ===
 function openEditSaldo() {
   const tabunganNow = document
@@ -507,8 +638,8 @@ async function updateSaldo() {
   tabungan += parseInt(inputTabungan);
   cash += parseInt(inputCash);
 
-  const tabunganThen = tabungan - tabunganNow; 
-  const cashThen = cash - cashNow; 
+  const tabunganThen = tabungan - tabunganNow;
+  const cashThen = cash - cashNow;
 
   const { error } = await supabase
     .from("saldo")
@@ -520,7 +651,9 @@ async function updateSaldo() {
   } else {
     document.getElementById("jumlahTambahTabungan").value = "";
     document.getElementById("jumlahTambahCash").value = "";
-    alert(`Berhasil mengedit saldo tabungan sebesar: ${tabunganThen} dan cash sebesar: ${cashThen}`)
+    alert(
+      `Berhasil mengedit saldo tabungan sebesar: ${tabunganThen} dan cash sebesar: ${cashThen}`
+    );
     closeEditSaldo();
     loadSaldo();
   }

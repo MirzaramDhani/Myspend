@@ -56,7 +56,36 @@
           <input type="text" id="keterangan" placeholder="Keterangan" />
           <button onclick="tambahPengeluaran()">Simpan</button>
         </div>
+        <div class="voice">
+          <button id="voiceButton" class="mic-button">
+            <svg
+              class="mic-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 19h2v3h-2z"
+              />
+            </svg>
+          </button>
+          <p id="speechResult" class="speech-result"></p>
+        </div>
       </div>
+
+      <!-- Tempat preview hasil pengenalan suara -->
+      <div id="voicePreview" class="voice-preview" style="display: none">
+        <h3>📋 Preview Pengeluaran dari Suara</h3>
+        <div class="preview-item">
+          <p><strong>Tanggal:</strong> <span id="prevTanggal"></span></p>
+          <p><strong>Keperluan:</strong> <span id="prevKeperluan"></span></p>
+          <p><strong>Jumlah:</strong> <span id="prevJumlah"></span></p>
+          <p><strong>Metode:</strong> <span id="prevMetode"></span></p>
+          <p><strong>keterangan:</strong> <span id="prevKet"></span></p>
+        </div>
+        <button id="saveVoicePengeluaran">💾 Simpan Pengeluaran</button>
+      </div>
+
       <!-- Catatan Keuangan -->
       <div class="catatan-section">
         <h3>Catatan Keuangan</h3>
@@ -108,52 +137,72 @@
     </div>
 
     <!-- Modal Edit Saldo -->
-<div id="editSaldoModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeEditSaldo()">&times;</span>
-    <h3>Edit Saldo</h3>
+    <div id="editSaldoModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeEditSaldo()">&times;</span>
+        <h3>Edit Saldo</h3>
 
-    <!-- Tabungan -->
-    <label>Tabungan</label>
-    <div class="edit-saldo">
-      <input type="number" id="editTabungan" placeholder="Masukkan saldo tabungan" />
-      <button class="tambah-button" onclick="toggleTambah('tabungan')">+</button>
-    </div>
+        <!-- Tabungan -->
+        <label>Tabungan</label>
+        <div class="edit-saldo">
+          <input
+            type="number"
+            id="editTabungan"
+            placeholder="Masukkan saldo tabungan"
+          />
+          <button class="tambah-button" onclick="toggleTambah('tabungan')">
+            +
+          </button>
+        </div>
 
-    <!-- Tambah Tabungan -->
-    <div id="tambahTabungan" class="tambah-input" style="display:none;">
-      <input type="number" id="jumlahTambahTabungan" placeholder="Tambahkan Nominal..." />
-      <div class="tombol-tambah">
-        <button onclick="tambahSaldo('tabungan', 100000)">100.000</button>
-        <button onclick="tambahSaldo('tabungan', 50000)">50.000</button>
-        <button onclick="tambahSaldo('tabungan', 20000)">20.000</button>
-        <button onclick="tambahSaldo('tabungan', 10000)">10.000</button>
-        <button onclick="tambahSaldo('tabungan', 5000)">5.000</button>
+        <!-- Tambah Tabungan -->
+        <div id="tambahTabungan" class="tambah-input" style="display: none">
+          <input
+            type="number"
+            id="jumlahTambahTabungan"
+            placeholder="Tambahkan Nominal..."
+          />
+          <div class="tombol-tambah">
+            <button onclick="tambahSaldo('tabungan', 100000)">100.000</button>
+            <button onclick="tambahSaldo('tabungan', 50000)">50.000</button>
+            <button onclick="tambahSaldo('tabungan', 20000)">20.000</button>
+            <button onclick="tambahSaldo('tabungan', 10000)">10.000</button>
+            <button onclick="tambahSaldo('tabungan', 5000)">5.000</button>
+          </div>
+        </div>
+
+        <!-- Cash -->
+        <label>Cash</label>
+        <div class="edit-saldo">
+          <input
+            type="number"
+            id="editCash"
+            placeholder="Masukkan saldo cash"
+          />
+          <button class="tambah-button" onclick="toggleTambah('cash')">
+            +
+          </button>
+        </div>
+
+        <!-- Tambah Cash -->
+        <div id="tambahCash" class="tambah-input" style="display: none">
+          <input
+            type="number"
+            id="jumlahTambahCash"
+            placeholder="Tambahkan Nominal..."
+          />
+          <div class="tombol-tambah">
+            <button onclick="tambahSaldo('cash', 100000)">100.000</button>
+            <button onclick="tambahSaldo('cash', 50000)">50.000</button>
+            <button onclick="tambahSaldo('cash', 20000)">20.000</button>
+            <button onclick="tambahSaldo('cash', 10000)">10.000</button>
+            <button onclick="tambahSaldo('cash', 5000)">5.000</button>
+          </div>
+        </div>
+
+        <button class="simpan-button" onclick="updateSaldo()">Simpan</button>
       </div>
     </div>
-
-    <!-- Cash -->
-    <label>Cash</label>
-    <div class="edit-saldo">
-      <input type="number" id="editCash" placeholder="Masukkan saldo cash" />
-      <button class="tambah-button" onclick="toggleTambah('cash')">+</button>
-    </div>
-
-    <!-- Tambah Cash -->
-    <div id="tambahCash" class="tambah-input" style="display:none;">
-      <input type="number" id="jumlahTambahCash" placeholder="Tambahkan Nominal..." />
-      <div class="tombol-tambah">
-        <button onclick="tambahSaldo('cash', 100000)">100.000</button>
-        <button onclick="tambahSaldo('cash', 50000)">50.000</button>
-        <button onclick="tambahSaldo('cash', 20000)">20.000</button>
-        <button onclick="tambahSaldo('cash', 10000)">10.000</button>
-        <button onclick="tambahSaldo('cash', 5000)">5.000</button>
-      </div>
-    </div>
-
-    <button class="simpan-button" onclick="updateSaldo()">Simpan</button>
-  </div>
-</div>
 
     <script src="/script/supabase.js"></script>
     <script src="/script/dashboard.js"></script>
