@@ -571,8 +571,12 @@ recognition.onresult = async (event) => {
   loadSaldo();
 };
 recognition.onerror = (err) => {
+  voiceBtn = document.getElementById("voiceButton").classList.remove("listening");
   document.getElementById("speechResult").innerText = `Error: ${err.error}`;
-  document.getElementById("voiceButton").classList.remove("listening");
+  if (voiceBtn.classList.contains("listening")) {
+    voiceBtn.classList.remove("listening");
+  }
+  recognition.stop();
 };
 
 // === Modal Edit Saldo ===
