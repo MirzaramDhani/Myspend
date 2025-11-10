@@ -138,26 +138,22 @@ document.getElementById("filterButton").addEventListener("click", async () => {
   hasilTotal.style.display = "block";
 });
 
-async function tambahPengeluaran() {
-  let tanggal = document.getElementById("tanggal").value;
-  let keperluan = document.getElementById("keperluan").value;
-  let jumlah = parseInt(document.getElementById("jumlah").value); // pastikan integer
-  let metode = document.getElementById("metode").value;
-  let keterangan = document.getElementById("keterangan").value;
-
-  // Insert pengeluaran
-  let { error: insertError } = await supabase
+// function insert pengeluaran
+async function insertData(user_id, tanggal, keperluan, jumlah, metode, keterangan){
+  let { error } = await supabase
     .from("pengeluaran")
     .insert([{ user_id, tanggal, keperluan, jumlah, metode, keterangan }]);
 
-  if (insertError) {
-    console.error(insertError);
-    alert("Gagal menambah pengeluaran!");
-    return;
+  if (error) {
+    console.error(error);
+    alert("Gagal menyimpan pengeluaran!");
   } else {
-    alert("Berhasil menambahkan pengeluaran");
+    alert(
+      `Pengeluaran ${keperluan} sebesar Rp ${jumlah.toLocaleString(
+        "id-ID"
+      )} berhasil disimpan!`
+    );
   }
-
   // Ambil saldo terakhir
   let { data: saldoData, error: saldoError } = await supabase
     .from("saldo")
@@ -190,6 +186,19 @@ async function tambahPengeluaran() {
     console.error(updateError);
     alert("Gagal update saldo!");
   }
+  loadPengeluaran();
+  loadSaldo();
+}
+
+async function tambahPengeluaran() {
+  let tanggal = document.getElementById("tanggal").value;
+  let keperluan = document.getElementById("keperluan").value;
+  let jumlah = parseInt(document.getElementById("jumlah").value); // pastikan integer
+  let metode = document.getElementById("metode").value;
+  let keterangan = document.getElementById("keterangan").value;
+
+  // Insert pengeluaran
+  insertData(user_id,tanggal,keperluan,jumlah,metode,keterangan );
 
   // Refresh data
   loadPengeluaran();
@@ -575,21 +584,7 @@ recognition.onresult = async (event) => {
   keterangan = sisaKata.join(" ").trim();
   if (!keterangan) keterangan = "";
 
-  let { error } = await supabase
-      .from("pengeluaran")
-      .insert([{ user_id, tanggal: tanggalFormatted, keperluan, jumlah, metode, keterangan }]);
-
-  if (error) {
-    console.error(error);
-    alert("Gagal menyimpan pengeluaran!");
-  } else {
-    alert(
-      `Pengeluaran ${keperluan} sebesar Rp ${jumlah.toLocaleString(
-        "id-ID"
-      )} berhasil disimpan!`
-    );
-  }
-
+  insertData(user_id, tanggalFormatted, keperluan, jumlah, metode, keterangan);
   loadPengeluaran();
   loadSaldo();
 };

@@ -31,7 +31,7 @@ async function login() {
 }
 
 
-// ✅ Fungsi logout
+// Fungsi logout
 function logout() {
   localStorage.removeItem("user_id");
   localStorage.removeItem("username");
@@ -39,7 +39,7 @@ function logout() {
   window.location.href = "index.html"; // halaman login
 }
 
-// ✅ Fungsi cek session (panggil di main.html)
+// Fungsi cek session (panggil di main.html)
 function checkSession() {
   const loginTime = localStorage.getItem("login_time");
   const oneHour = 60 * 60 * 1000; // 1 jam dalam ms
