@@ -460,17 +460,40 @@ const recognition = new SpeechRecognition();
 recognition.lang = "id-ID";
 recognition.continuous = false;
 recognition.interimResults = false;
+const voiceBtn = document.getElementById("voiceButton");
+const speechResult = document.getElementById("speechResult");
 
-document.getElementById("voiceButton").addEventListener("click", () => {
-  recognition.start();
-  document.getElementById("voiceButton").classList.add("listening");
-  document.getElementById("speechResult").innerText = "Mendengarkan...";
+let speechTimeout;
+let hasResult = false; // penanda apakah ada hasil suara
+
+voiceBtn.addEventListener("click", () => {
+  try {
+    recognition.start();
+    voiceBtn.classList.add("listening");
+    speechResult.innerText = "Mendengarkan...";
+    hasResult = false;
+
+    clearTimeout(speechTimeout);
+    // Timeout otomatis berhenti kalau tidak ada hasil
+    speechTimeout = setTimeout(() => {
+      if (!hasResult) {
+        recognition.stop();
+        voiceBtn.classList.remove("listening");
+        speechResult.innerText = "Error: Tidak ada kata terdeteksi!";
+      }
+    }, 10000); // 10 detik
+  } catch (err) {
+    console.error("Gagal memulai speech recognition:", err);
+    speechResult.innerText = "Error: Tidak dapat memulai mikrofon.";
+  }
 });
 
 recognition.onresult = async (event) => {
-  document.getElementById("voiceButton").classList.remove("listening");
+  hasResult = true;
+  clearTimeout(speechTimeout);
+  voiceBtn.classList.remove("listening");
   const speech = event.results[0][0].transcript.toLowerCase();
-  document.getElementById("speechResult").innerText = `"${speech}"`;
+  speechResult.innerText = `"${speech}"`;
 
   // Parsing dasar
   const tanggal = new Date();
@@ -571,11 +594,12 @@ recognition.onresult = async (event) => {
   loadSaldo();
 };
 recognition.onerror = (err) => {
-  voiceBtn = document.getElementById("voiceButton").classList.remove("listening");
-  document.getElementById("speechResult").innerText = `Error: ${err.error}`;
-  if (voiceBtn.classList.contains("listening")) {
-    voiceBtn.classList.remove("listening");
-  }
+  clearTimeout(speechTimeout);
+  hasResult = false;
+  speechResult.innerText = `Error: ${err.error}`;
+  voiceBtn.classList.remove("listening");
+
+  // pastikan berhenti mendengarkan
   recognition.stop();
 };
 
