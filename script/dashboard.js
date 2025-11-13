@@ -78,12 +78,81 @@ async function loadPengeluaran() {
   });
 }
 
+// tambah filter keperluan rentang waktu
+const keperluanContainer = document.getElementById("keperluanContainer");
+const tambahKeperluanBtn = document.getElementById("tambahKeperluan");
+const MAX_KEPERLUAN = 3;
+
+tambahKeperluanBtn.addEventListener("click", () => {
+  const currentCount =
+    keperluanContainer.querySelectorAll(".rentangKeperluan").length;
+  if (currentCount >= MAX_KEPERLUAN) return;
+  //hapus option semua 
+  if (currentCount >= 1){
+    const firstSelect = document.getElementById("rentangKeperluan");
+    const emptyOption = firstSelect.querySelector('option[value=""]');
+    if (emptyOption) {
+      emptyOption.remove();
+    }
+  }
+
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("keperluanList")
+  wrapper.style.display = "flex";
+  wrapper.style.alignItems = "center";
+  wrapper.style.gap = "5px";
+
+  const newSelect = document.createElement("select");
+  newSelect.classList.add("rentangKeperluan");
+  newSelect.innerHTML = `
+    <option value="makan">Makan</option>
+    <option value="bensin">Bensin</option>
+    <option value="belanja">Belanja</option>
+    <option value="laundry">Laundry</option>
+    <option value="toko online">Toko Online</option>
+    <option value="lain-lain">Lain-lain</option>
+  `;
+
+  const removeBtn = document.createElement("button");
+  removeBtn.textContent = "-";
+  removeBtn.classList.add("removeKeperluan");
+  removeBtn.addEventListener("click", () => {
+    // add option semua
+    if (currentCount <= 1) {
+      const keperluanOption = document.getElementById("rentangKeperluan");
+      const addOption = document.createElement("option");
+      addOption.value = "";
+      addOption.textContent ="Semua";
+      keperluanOption.insertBefore(addOption, keperluanOption.firstChild);
+    }
+    wrapper.remove();
+    toggleTambahButton();
+  });
+
+  wrapper.appendChild(removeBtn);
+  wrapper.appendChild(newSelect);
+  keperluanContainer.appendChild(wrapper);
+
+  toggleTambahButton();
+});
+
+function toggleTambahButton() {
+  const total = keperluanContainer.querySelectorAll(".rentangKeperluan").length;
+  tambahKeperluanBtn.disabled = total >= MAX_KEPERLUAN;
+}
+
 // Total Pengeluaran Rentang waktu
 document.getElementById("filterButton").addEventListener("click", async () => {
   const mulai = document.getElementById("tanggalMulai").value;
   const akhir = document.getElementById("tanggalAkhir").value;
-  const keperluan = document.getElementById("rentangKeperluan").value;
+  const metode = document.getElementById("rentangMetode").value;
   const hasilTotal = document.getElementById("hasilTotal");
+
+  const keperluanList = Array.from(
+    document.querySelectorAll(".rentangKeperluan")
+  )
+    .map((el) => el.value)
+    .filter((val) => val !== "");
 
   if (!mulai || !akhir) {
     alert("Pilih kedua tanggal terlebih dahulu!");
@@ -95,17 +164,21 @@ document.getElementById("filterButton").addEventListener("click", async () => {
     return;
   }
 
-  // 🔹 Mulai query dasar
+  // Mulai query dasar
   let query = supabase
     .from("pengeluaran")
-    .select("jumlah, keperluan")
+    .select("jumlah, keperluan, metode")
     .eq("user_id", user_id)
     .gte("tanggal", mulai)
     .lte("tanggal", akhir);
 
-  // 🔹 Jika user memilih keperluan tertentu, tambahkan filter
-  if (keperluan && keperluan !== "") {
-    query = query.eq("keperluan", keperluan);
+  // Jika user memilih keperluan tertentu, tambahkan filter
+  if (keperluanList.length > 0) {
+    query = query.in("keperluan", keperluanList);
+  }
+
+  if (metode && metode !== "") {
+    query = query.eq("metode", metode);
   }
 
   const { data, error } = await query;
@@ -117,24 +190,29 @@ document.getElementById("filterButton").addEventListener("click", async () => {
   }
 
   if (!data || data.length === 0) {
-    hasilTotal.innerText = "Tidak ada pengeluaran pada rentang tanggal ini.";
+    hasilTotal.innerText = "Tidak ada pengeluaran.";
     return;
   }
 
-  // 🔹 Hitung total pengeluaran
+  // Hitung total pengeluaran
   const total = data.reduce((acc, row) => acc + parseInt(row.jumlah), 0);
 
-  // 🔹 Tampilkan hasil
-  if (keperluan && keperluan !== "") {
-    hasilTotal.innerText = `Total Pengeluaran untuk "${keperluan}" dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString(
+  // Menampilkan hasil
+  let teksHasil = `Total Pengeluaran dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString(
+    "id-ID"
+  )}`;
+  if (keperluanList.length > 0)
+    teksHasil = `Total Pengeluaran ${keperluanList.join(
+      ", "
+    )} dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString("id-ID")}`;
+  if (metode && metode !== "")
+    teksHasil = `Total Pengeluaran ${keperluanList.join(
+      ", "
+    )} dengan ${metode} dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString(
       "id-ID"
     )}`;
-  } else {
-    hasilTotal.innerText = `Total Pengeluaran dari ${mulai} sampai ${akhir}: Rp ${total.toLocaleString(
-      "id-ID"
-    )}`;
-  }
 
+  hasilTotal.innerText = teksHasil;
   hasilTotal.style.display = "block";
 });
 

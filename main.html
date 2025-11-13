@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/style/style.css" />
   </head>
   <body onload="checkSession()">
-    <div style="margin: 20px">
+    <div style="margin: 20px 10px">
       <div class="welcome">
         <h1>Selamat datang, <span id="username"></span></h1>
         <button class="logout" onclick="logout()">Logout</button>
@@ -22,19 +22,29 @@
           <input type="date" id="tanggalMulai" />
           <p>-</p>
           <input type="date" id="tanggalAkhir" />
-          <select id="rentangKeperluan">
-            <option value="">-</option>
-            <option value="makan">Makan</option>
-            <option value="bensin">Bensin</option>
-            <option value="belanja">Belanja</option>
-            <option value="laundry">Laundry</option>
-            <option value="toko online">Toko Online</option>
-            <option value="lain-lain">Lain-lain</option>
+          <div id="keperluanContainer" class="keperluanContainer">
+            <select id="rentangKeperluan" class="rentangKeperluan">
+              <option value="">Semua</option>
+              <option value="makan">Makan</option>
+              <option value="bensin">Bensin</option>
+              <option value="belanja">Belanja</option>
+              <option value="laundry">Laundry</option>
+              <option value="toko online">Toko Online</option>
+              <option value="lain-lain">Lain-lain</option>
+            </select>
+          </div>
+          <button id="tambahKeperluan" class="tambahKeperluan">+</button>
+          <select id="rentangMetode">
+            <option value="">Semua</option>
+            <option value="qris">QRIS</option>
+            <option value="cash">Cash</option>
+            <option value="transfer">Transfer</option>
           </select>
           <button id="filterButton">Pilih</button>
         </div>
         <div id="hasilTotal" class="total-rentang"></div>
       </div>
+      <!-- Pengeluaran -->
       <div class="pengeluaran">
         <h3>Tambah Pengeluaran</h3>
         <div class="form-pengeluaran">

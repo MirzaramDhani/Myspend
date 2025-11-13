@@ -32,7 +32,7 @@ h3 {
   background: #fff;
   padding: 25px;
   border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 350px;
   margin: auto;
@@ -40,7 +40,9 @@ h3 {
 }
 
 /* Input & Select */
-input, select, button {
+input,
+select,
+button {
   width: 100%;
   padding: 12px;
   margin: 10px 0;
@@ -49,23 +51,28 @@ input, select, button {
   transition: all 0.3s ease;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #4caf50;
   box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
 }
 
 /* Header Welcome */
 .welcome {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
-  background: #4CAF50;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  padding: 14px 24px;
+  background-color: #4caf50;
   color: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-bottom: 1px solid #3e8e41;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 6px 6px;
 }
 
 .welcome h1 {
@@ -76,7 +83,7 @@ input:focus, select:focus {
 .logout {
   width: 10%;
   background-color: #e74c3c;
-  border: none;
+  border: 0.5px solid #00000065;
   padding: 10px 18px;
   border-radius: 6px;
   color: white;
@@ -90,7 +97,7 @@ input:focus, select:focus {
 
 /* Button */
 button {
-  background: #4CAF50;
+  background: #4caf50;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -111,16 +118,17 @@ table {
   background: #fff;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   text-align: center;
 }
 
 th {
-  background: #4CAF50;
+  background: #4caf50;
   color: #ffff;
   text-transform: uppercase;
   font-size: 14px;
@@ -137,7 +145,7 @@ tr:nth-child(even) {
   font-size: 22px;
   font-weight: bold;
   color: #2c3e50;
-  border-left: 5px solid #4CAF50;
+  border-left: 5px solid #4caf50;
   padding-left: 10px;
 }
 
@@ -154,49 +162,75 @@ tr:nth-child(even) {
 }
 .rentangPengeluaran,
 .catatan-section,
-.pengeluaran{
+.pengeluaran {
   padding: 20px;
   background: #f8f8f8;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
 }
 
-.form-rentangPengeluaran{
+.form-rentangPengeluaran,
+.keperluanContainer {
   display: flex;
   gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  gap: 5px;
 }
 
-.rentangPengeluaran p{
+.keperluanContainer select,
+.keperluanContainer button {
+  width: 150px;
+}
+
+.rentangPengeluaran p {
   align-self: center;
   font-size: 30px;
 }
-.rentangPengeluaran button{
+
+.tambahKeperluan,
+.removeKeperluan {
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #000;
+}
+
+.tambahKeperluan:hover,
+.removeKeperluan:hover {
+  background-color: #fff;
+}
+#rentangMetode {
+  max-width: 150px;
+}
+.rentangPengeluaran button {
   width: 700px;
 }
 
-.total-rentang{
+.total-rentang {
   display: none;
   background: #f8f8f8;
-
 }
 
 .pengeluaran {
   background: #fff;
 }
 
-.form-pengeluaran{
+.form-pengeluaran {
   display: flex;
   justify-content: space-between;
   gap: 10px;
 }
 
-.pengeluaran input, 
-.pengeluaran select{
+.pengeluaran input,
+.pengeluaran select {
   width: 15%;
 }
 
-.pengeluaran button{
+.pengeluaran button {
   width: 200px;
 }
 
@@ -216,17 +250,17 @@ tr:nth-child(even) {
   padding: 20px;
   background: linear-gradient(135deg, #e0ffe0, #d2fbd2);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.edit-saldo{
+.edit-saldo {
   display: flex;
 }
-.edit-saldo input{
+.edit-saldo input {
   border-radius: 6px 0 0 6px;
 }
 
-.tambah-button{
+.tambah-button {
   max-width: 13%;
   border-radius: 0 6px 6px 0;
   background: #fff;
@@ -234,20 +268,20 @@ tr:nth-child(even) {
   border: 1px solid #ccc;
 }
 
-.tambah-button:hover{
+.tambah-button:hover {
   background: #fff;
 }
 
-.tambah-input input{
+.tambah-input input {
   margin: 0;
 }
 
-.tombol-tambah{
+.tombol-tambah {
   display: flex;
   gap: 5px;
 }
 
-.tombol-tambah button{
+.tombol-tambah button {
   padding: 7px;
   color: #000;
   background: #fff;
@@ -257,14 +291,14 @@ tr:nth-child(even) {
 
 /* Modal */
 .modal {
-  display: none; 
+  display: none;
   position: fixed;
   z-index: 999;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(3px);
 }
 
@@ -278,7 +312,7 @@ tr:nth-child(even) {
   animation: slideDown 0.4s ease;
 }
 
-#hapusButton{
+#hapusButton {
   background-color: #e74c3c;
 }
 
@@ -289,7 +323,7 @@ tr:nth-child(even) {
   color: #555;
 }
 
-.close:hover{
+.close:hover {
   transform: scale(1.5);
 }
 .voice {
@@ -311,7 +345,7 @@ tr:nth-child(even) {
   align-items: center;
   justify-content: center;
 }
-.mic-button:hover{
+.mic-button:hover {
   background-color: rgb(214, 210, 210);
 }
 
@@ -357,76 +391,113 @@ tr:nth-child(even) {
 
 /* Efek glow lembut pada ikon mic */
 @keyframes micGlow {
-  0% { text-shadow: 0 0 0px rgba(255,255,255,0.8); }
-  50% { text-shadow: 0 0 10px rgba(255,255,255,1); }
-  100% { text-shadow: 0 0 0px rgba(255,255,255,0.8); }
+  0% {
+    text-shadow: 0 0 0px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 1);
+  }
+  100% {
+    text-shadow: 0 0 0px rgba(255, 255, 255, 0.8);
+  }
 }
 
 /* Animation */
 @keyframes fadeIn {
-  from {opacity: 0; transform: translateY(-20px);}
-  to {opacity: 1; transform: translateY(0);}
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideDown {
-  from {opacity: 0; transform: translateY(-30px);}
-  to {opacity: 1; transform: translateY(0);}
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive */
 @media (max-width: 1080px) {
-  *{
+  * {
     font-size: large;
   }
-  .welcome span{
+  .welcome span {
     font-size: inherit;
   }
   .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;   
-    margin-top: 10px;           
+    min-height: 100vh;
+    margin-top: 10px;
     padding: 20px;
   }
 
   .login-box {
     width: 100%;
     height: 500px;
-    max-width: 500px;   
-    padding: 40px;      
+    max-width: 500px;
+    padding: 40px;
   }
 
-  .login-box input, .login-box button{
+  .login-box input,
+  .login-box button {
     padding: 25px;
     margin: 15px auto;
     font-size: 20px;
   }
-  .login-box h2{
+  .login-box h2 {
     margin-bottom: 50px;
   }
 
   .welcome {
     gap: 10px;
   }
-
-  .rentangPengeluaran button{
-  width: 550px;
+  .keperluanList .rentangKeperluan {
+    padding: 20px;
+    height: auto;
   }
-  
-  .pengeluaran input, 
+
+  .keperluanContainer select,
+  #rentangMetode{
+    max-width: 110px;
+  }
+  .form-rentangPengeluaran input{
+    min-width: 100px;
+  }
+
+  .pengeluaran input,
   .pengeluaran select,
   .pengeluaran button {
     width: 100%;
   }
 
   .pengeluaran button,
-  .saldo button,
-  .rentangPengeluaran button{
+  .saldo button {
     padding: 20px;
   }
 
-  table, th, td {
+  .tambahKeperluan,
+  .removeKeperluan {
+    align-self: center;
+    padding: 10px;
+    max-width: 50px;
+    max-height: 50px;
+    height: 50px;
+  }
+
+  table,
+  th,
+  td {
     font-size: 15px;
   }
 
@@ -434,15 +505,14 @@ tr:nth-child(even) {
     margin: 500px auto;
     max-width: 800px;
   }
-  .catatan-section textarea{
+  .catatan-section textarea {
     font-size: 18px;
   }
-  .catatan-section textarea::placeholder{
+  .catatan-section textarea::placeholder {
     font-size: 20px;
   }
-  .mic-button{
+  .mic-button {
     max-width: 80px;
     height: 80px;
   }
 }
-
