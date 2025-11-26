@@ -62,7 +62,7 @@ select:focus {
 .welcome {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 99;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -141,13 +141,36 @@ tr:nth-child(even) {
 
 /* Bulan Title */
 .bulan-title {
+  background: #f8f8f8 ;
+  width: 20%;
+  cursor: pointer;
+  user-select: none;
   margin-top: 30px;
   font-size: 22px;
   font-weight: bold;
   color: #2c3e50;
-  border-left: 5px solid #4caf50;
-  padding-left: 10px;
+  border-left: 7px solid #4caf50;
+  padding: 10px;
+  border-radius: 0 5px 5px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
+.bulan-title:hover {
+  background: #e7e7e7;
+  transition: all 0.3s ease;
+}
+
+.tabel-container {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease, opacity 0.35s ease;
+  opacity: 0;
+}
+
+.tabel-container.open {
+  opacity: 1;
+  max-height: 10000px;
+}
+
 
 /* Total bulanan */
 .total-bulanan,
