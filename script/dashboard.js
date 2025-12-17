@@ -1,5 +1,5 @@
 // dashboard.js
-const supabase = window.supabaseClient;
+const spbase = window.supabaseClient;
 
 const user_id = localStorage.getItem("user_id");
 document.getElementById("username").innerText =
@@ -7,7 +7,7 @@ document.getElementById("username").innerText =
 
 // Render Pengeluaran
 async function loadPengeluaran() {
-  let { data, error } = await supabase
+  let { data, error } = await spbase
     .from("pengeluaran")
     .select("*")
     .eq("user_id", user_id)
@@ -140,7 +140,7 @@ async function updatePengeluaran() {
   let keterangan = document.getElementById("editKeterangan").value;
 
   // Ambil saldo terakhir
-  let { data: saldoData, error: saldoError } = await supabase
+  let { data: saldoData, error: saldoError } = await spbase
     .from("saldo")
     .select("*")
     .eq("user_id", user_id)
@@ -188,7 +188,7 @@ async function updatePengeluaran() {
   }
 
   // Update saldo
-  let { error: updateError } = await supabase
+  let { error: updateError } = await spbase
     .from("saldo")
     .update({ tabungan, cash })
     .eq("user_id", user_id);
@@ -199,7 +199,7 @@ async function updatePengeluaran() {
   }
 
   // Update data pengeluaran di database
-  let { error } = await supabase
+  let { error } = await spbase
     .from("pengeluaran")
     .update({
       tanggal,
@@ -226,7 +226,7 @@ async function hapusPengeluaran() {
   if (!confirm("Yakin ingin menghapus pengeluaran ini?")) return;
 
   // Ambil data sebelum hapus (supaya saldo bisa dikembalikan)
-  let { data: pengeluaranData, error: getError } = await supabase
+  let { data: pengeluaranData, error: getError } = await spbase
     .from("pengeluaran")
     .select("*")
     .eq("id", id)
@@ -242,7 +242,7 @@ async function hapusPengeluaran() {
   const metode = pengeluaranData.metode;
 
   // 🔹 Hapus pengeluaran
-  let { error: deleteError } = await supabase
+  let { error: deleteError } = await spbase
     .from("pengeluaran")
     .delete()
     .eq("id", id);
@@ -254,7 +254,7 @@ async function hapusPengeluaran() {
   }
 
   // 🔹 Ambil saldo terakhir
-  let { data: saldoData, error: saldoError } = await supabase
+  let { data: saldoData, error: saldoError } = await spbase
     .from("saldo")
     .select("*")
     .eq("user_id", user_id)
@@ -277,7 +277,7 @@ async function hapusPengeluaran() {
   }
 
   // 🔹 Update saldo
-  let { error: updateError } = await supabase
+  let { error: updateError } = await spbase
     .from("saldo")
     .update({ tabungan, cash })
     .eq("user_id", user_id);
@@ -380,7 +380,7 @@ document.getElementById("filterButton").addEventListener("click", async () => {
   }
 
   // Mulai query dasar
-  let query = supabase
+  let query = spbase
     .from("pengeluaran")
     .select("jumlah, keperluan, metode")
     .eq("user_id", user_id)
@@ -433,7 +433,7 @@ document.getElementById("filterButton").addEventListener("click", async () => {
 
 // function insert pengeluaran
 async function insertData(user_id, tanggal, keperluan, jumlah, metode, keterangan){
-  let { error } = await supabase
+  let { error } = await spbase
     .from("pengeluaran")
     .insert([{ user_id, tanggal, keperluan, jumlah, metode, keterangan }]);
 
@@ -448,7 +448,7 @@ async function insertData(user_id, tanggal, keperluan, jumlah, metode, keteranga
     );
   }
   // Ambil saldo terakhir
-  let { data: saldoData, error: saldoError } = await supabase
+  let { data: saldoData, error: saldoError } = await spbase
     .from("saldo")
     .select("*")
     .eq("user_id", user_id)
@@ -470,7 +470,7 @@ async function insertData(user_id, tanggal, keperluan, jumlah, metode, keteranga
     cash -= jumlah;
   }
 
-  let { error: updateError } = await supabase
+  let { error: updateError } = await spbase
     .from("saldo")
     .update({ tabungan, cash })
     .eq("user_id", user_id);
@@ -499,7 +499,7 @@ async function tambahPengeluaran() {
 }
 
 async function loadSaldo() {
-  let { data, error } = await supabase
+  let { data, error } = await spbase
     .from("saldo")
     .select("*")
     .eq("user_id", user_id)
@@ -520,7 +520,7 @@ async function loadSaldo() {
 
 // Render catatan
 async function loadCatatanTerakhir() {
-  const { data, error } = await supabase
+  const { data, error } = await spbase
     .from("catatan")
     .select("isi")
     .eq("user_id", user_id)
@@ -543,7 +543,7 @@ const catatanInput = document.getElementById("catatanTeks");
 
 catatanInput.addEventListener("blur", async () => {
   const isi = catatanInput.value.trim();
-  const { error } = await supabase.from("catatan").upsert({ user_id, isi });
+  const { error } = await spbase.from("catatan").upsert({ user_id, isi });
 
   if (error) {
     console.error(error);
@@ -759,7 +759,7 @@ async function updateSaldo() {
   const tabunganThen = tabungan - tabunganNow;
   const cashThen = cash - cashNow;
 
-  const { error } = await supabase
+  const { error } = await spbase
     .from("saldo")
     .upsert({ user_id: user_id, tabungan, cash });
 
